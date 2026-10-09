@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قائمة ألعاب PlayStation 5 - مركز البروفسير</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts (Cairo & Tajawal) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- SheetJS for Excel Export -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        psBg: '#080d1a',
+                        psNavy: '#0f172a',
+                        psCard: '#131e3a',
+                        psBlue: '#00439c',
+                        psBrightBlue: '#0070d1',
+                        psCyan: '#00d4ff',
+                        psGold: '#ffb703',
+                        psEmerald: '#10b981',
+                        psRose: '#f43f5e'
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                        tajawal: ['Tajawal', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #080d1a;
+            color: #f1f5f9;
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(0, 67, 156, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(0, 212, 255, 0.1) 0%, transparent 40%);
+            background-attachment: fixed;
+        }
+
+        .glass-card {
+            background: rgba(19, 30, 58, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-header {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 212, 255, 0.15);
+        }
+
+        .ps-glow {
+            box-shadow: 0 0 25px rgba(0, 212, 255, 0.25);
+        }
+
+        .ps-glow-hover:hover {
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.45);
+            border-color: rgba(0, 212, 255, 0.4);
+        }
+
+        .badge-cyan {
+            background: rgba(0, 212, 255, 0.12);
+            color: #00d4ff;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .badge-gold {
+            background: rgba(255, 183, 3, 0.12);
+            color: #ffb703;
+            border: 1px solid rgba(255, 183, 3, 0.3);
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #080d1a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #00439c;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0070d1;
+        }
+
+        @media print {
+            .no-print, header, .controls-bar, #adminPanel, footer, .toast-container {
+                display: none !important;
+            }
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            .glass-card {
+                background: white !important;
+                border: none !important;
+                box-shadow: none !important;
+            }
+            table {
+                width: 100% !important;
+                color: black !important;
+                border-collapse: collapse !important;
+            }
+            th, td {
+                border: 1px solid #cbd5e1 !important;
+                color: black !important;
+                padding: 8px !important;
+            }
+            thead {
+                background-color: #00439c !important;
+                color: white !important;
+                -webkit-print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-psCyan selection:text-psBg">
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed bottom-5 left-5 z-50 flex flex-col gap-2 no-print"></div>
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-40 glass-header shadow-2xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- Logo & Branding -->
+                <div class="flex items-center gap-3 sm:gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-psBlue via-psBrightBlue to-psCyan flex items-center justify-center text-white text-2xl font-black shadow-lg ps-glow">
+                        <i class="fa-brands fa-playstation"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h1 class="text-lg sm:text-2xl font-black text-white tracking-wide">مركز البروفسير</h1>
+                            <span class="text-[10px] sm:text-xs bg-psBlue/60 text-psCyan px-2.5 py-0.5 rounded-full border border-psCyan/30 font-bold hidden sm:inline-block">PS5 Jailbreak Catalog</span>
+                        </div>
+                        <p class="text-xs text-slate-400 font-tajawal">قائمة ألعاب PlayStation 5 المعتمدة والمعدلة</p>
+                    </div>
+                </div>
+
+                <!-- Admin Action Button -->
+                <div class="flex items-center gap-3">
+                    <button id="adminToggleBtn" onclick="toggleAdminPrompt()" class="flex items-center gap-2 bg-slate-800/90 hover:bg-slate-700 text-slate-200 px-4 py-2.5 rounded-xl border border-slate-700 transition-all text-xs sm:text-sm font-bold shadow-lg hover:border-psCyan">
+                        <i class="fa-solid fa-lock text-psGold" id="adminLockIcon"></i>
+                        <span id="adminBtnText">دخول لوحة التحكم</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+
+        <!-- Top KPI Metrics Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8 no-print">
+            <div class="glass-card rounded-2xl p-4 flex items-center gap-4 border border-slate-800 hover:border-psBlue/60 transition">
+                <div class="w-12 h-12 rounded-xl bg-psBlue/30 text-psCyan flex items-center justify-center text-xl font-bold border border-psBlue/40">
+                    <i class="fa-solid fa-gamepad"></i>
+                </div>
+                <div>
+                    <span class="text-xs text-slate-400 font-bold block mb-0.5">إجمالي الألعاب بالمكتبة</span>
+                    <h3 id="statTotalGames" class="text-2xl font-black text-white leading-none">65</h3>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl p-4 flex items-center gap-4 border border-slate-800 hover:border-psBlue/60 transition">
+                <div class="w-12 h-12 rounded-xl bg-psGold/20 text-psGold flex items-center justify-center text-xl font-bold border border-psGold/30">
+                    <i class="fa-solid fa-hard-drive"></i>
+                </div>
+                <div>
+                    <span class="text-xs text-slate-400 font-bold block mb-0.5">إجمالي السعة التخزينية</span>
+                    <h3 id="statTotalStorage" class="text-2xl font-black text-white leading-none">0 GB</h3>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl p-4 flex items-center gap-4 border border-slate-800 hover:border-psBlue/60 transition sm:col-span-2 lg:col-span-1">
+                <div class="w-12 h-12 rounded-xl bg-psEmerald/20 text-psEmerald flex items-center justify-center text-xl font-bold border border-psEmerald/30">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div>
+                    <span class="text-xs text-slate-400 font-bold block mb-0.5">حالة النظام والجاهزية</span>
+                    <h3 id="statStatusText" class="text-base font-extrabold text-psEmerald leading-snug">مُحدث ومزامن تلقائياً</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls Bar -->
+        <div class="controls-bar glass-card rounded-2xl p-4 sm:p-5 mb-8 shadow-xl border border-slate-800">
+            <div class="flex flex-col lg:flex-row items-center justify-between gap-4">
+                
+                <!-- Live Search -->
+                <div class="relative w-full lg:w-1/2">
+                    <i class="fa-solid fa-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-psCyan text-base"></i>
+                    <input type="text" id="searchInput" oninput="handleSearch()" placeholder="ابحث باسم اللعبة، كود PPSA، أو المساحة..." class="w-full bg-slate-900/90 text-white placeholder-slate-400 pr-11 pl-10 py-3 rounded-xl border border-slate-700/80 focus:outline-none focus:border-psCyan focus:ring-1 focus:ring-psCyan text-sm transition font-tajawal shadow-inner">
+                    <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition text-xs bg-slate-800 px-2 py-1 rounded-md">
+                        مسح
+                    </button>
+                </div>
+
+                <!-- Action Buttons & Layout Switches -->
+                <div class="flex flex-wrap items-center justify-between lg:justify-end w-full lg:w-auto gap-2.5">
+                    
+                    <!-- Excel Export -->
+                    <button onclick="exportExcel()" class="bg-emerald-600/90 hover:bg-emerald-500 text-white px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition shadow-md border border-emerald-500/30">
+                        <i class="fa-solid fa-file-excel text-base"></i>
+                        <span>تصدير Excel</span>
+                    </button>
+
+                    <!-- Print / PDF -->
+                    <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-700 text-white px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition shadow-md border border-slate-700">
+                        <i class="fa-solid fa-print text-base"></i>
+                        <span>طباعة / PDF</span>
+                    </button>
+
+                    <!-- View Mode Switcher -->
+                    <div class="flex bg-slate-900/90 p-1 rounded-xl border border-slate-800">
+                        <button id="tableViewBtn" onclick="switchView('table')" class="px-3.5 py-2 rounded-lg bg-psBlue text-white transition text-xs font-bold flex items-center gap-1.5 shadow">
+                            <i class="fa-solid fa-list"></i>
+                            <span class="hidden sm:inline">جدول</span>
+                        </button>
+                        <button id="gridViewBtn" onclick="switchView('grid')" class="px-3.5 py-2 rounded-lg text-slate-400 hover:text-white transition text-xs font-bold flex items-center gap-1.5">
+                            <i class="fa-solid fa-grip"></i>
+                            <span class="hidden sm:inline">شبكي</span>
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Admin Management Panel (Protected) -->
+        <div id="adminPanel" class="hidden mb-8 glass-card rounded-2xl p-6 border-2 border-psCyan/40 shadow-2xl bg-gradient-to-b from-psCard to-psBg relative overflow-hidden">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-800">
+                <h3 id="adminFormTitle" class="text-lg sm:text-xl font-black text-psCyan flex items-center gap-2">
+                    <i class="fa-solid fa-plus-circle"></i> إضافة لعبة جديدة للقائمة
+                </h3>
+                
+                <div class="flex flex-wrap items-center gap-2">
+                    <button onclick="backupJSON()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition">
+                        <i class="fa-solid fa-download"></i> تصدير JSON
+                    </button>
+                    <button onclick="restoreDefaultGames()" class="bg-rose-950/60 hover:bg-rose-900 text-rose-300 border border-rose-800/60 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition">
+                        <i class="fa-solid fa-rotate-left"></i> استعادة الـ 65 لعبة الأصلية
+                    </button>
+                </div>
+            </div>
+
+            <!-- Form -->
+            <form id="gameForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
+                <input type="hidden" id="editGameId">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1 font-bold">اسم اللعبة *</label>
+                        <input type="text" id="gameTitle" required placeholder="مثال: ASTRO BOT (PS5)" class="w-full bg-slate-900 text-white px-3.5 py-2.5 rounded-xl border border-slate-700 text-xs sm:text-sm focus:border-psCyan focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1 font-bold">المساحة التخزينية *</label>
+                        <input type="text" id="gameSize" required placeholder="مثال: 50.0 GB" class="w-full bg-slate-900 text-white px-3.5 py-2.5 rounded-xl border border-slate-700 text-xs sm:text-sm focus:border-psCyan focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1 font-bold">كود اللعبة (PPSA)</label>
+                        <input type="text" id="gameCode" placeholder="مثال: PPSA07570" class="w-full bg-slate-900 text-white px-3.5 py-2.5 rounded-xl border border-slate-700 text-xs sm:text-sm focus:border-psCyan focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1 font-bold">السعر (اختياري)</label>
+                        <input type="text" id="gamePrice" placeholder="مثال: 150 ج.م" class="w-full bg-slate-900 text-white px-3.5 py-2.5 rounded-xl border border-slate-700 text-xs sm:text-sm focus:border-psCyan focus:outline-none">
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label class="block text-xs text-slate-300 mb-1 font-bold">رابط صورة الغلاف (URL Image)</label>
+                        <input type="url" id="gameImage" placeholder="https://example.com/cover.jpg" class="w-full bg-slate-900 text-white px-3.5 py-2.5 rounded-xl border border-slate-700 text-xs sm:text-sm focus:border-psCyan focus:outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs text-slate-300 mb-1 font-bold">ملاحظات إضافية</label>
+                    <input type="text" id="gameNotes" placeholder="مثال: باللغة العربية بملف التحديث الأخير" class="w-full bg-slate-900 text-white px-3.5 py-2.5 rounded-xl border border-slate-700 text-xs sm:text-sm focus:border-psCyan focus:outline-none">
+                </div>
+
+                <div class="flex items-center gap-3 pt-2">
+                    <button type="submit" id="saveBtn" class="bg-gradient-to-r from-psBlue to-psBrightBlue hover:from-blue-600 hover:to-blue-400 text-white font-black px-6 py-2.5 rounded-xl text-xs sm:text-sm transition shadow-lg flex items-center gap-2">
+                        <i class="fa-solid fa-floppy-disk"></i> حفظ البيانات
+                    </button>
+                    <button type="button" onclick="resetForm()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition">
+                        إلغاء / إعادة ضبط
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Display View 1: Interactive Table -->
+        <div id="tableView" class="glass-card rounded-2xl overflow-hidden shadow-2xl border border-slate-800">
+            <div class="overflow-x-auto">
+                <table class="w-full text-right text-xs sm:text-sm">
+                    <thead class="bg-gradient-to-r from-psBlue to-psNavy text-white font-black border-b border-slate-800">
+                        <tr>
+                            <th class="p-3.5 text-center w-12">م</th>
+                            <th class="p-3.5 text-center w-16">الغلاف</th>
+                            <th class="p-3.5 cursor-pointer hover:text-psCyan transition" onclick="sortData('title')">
+                                اسم اللعبة (Game Title) <i class="fa-solid fa-sort text-[10px] opacity-60"></i>
+                            </th>
+                            <th class="p-3.5 text-center cursor-pointer hover:text-psCyan transition" onclick="sortData('size')">
+                                المساحة <i class="fa-solid fa-sort text-[10px] opacity-60"></i>
+                            </th>
+                            <th class="p-3.5 text-center">كود اللعبة (Game ID)</th>
+                            <th class="p-3.5 text-center">السعر</th>
+                            <th class="p-3.5">ملاحظات</th>
+                            <th class="p-3.5 text-center admin-col hidden w-24">إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="gamesTableBody" class="divide-y divide-slate-800/80 text-slate-200">
+                        <!-- Dynamic Rows -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Display View 2: Cards Grid -->
+        <div id="gridView" class="hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+            <!-- Dynamic Cards -->
+        </div>
+
+        <!-- Empty Results Message -->
+        <div id="emptyMessage" class="hidden text-center py-16 glass-card rounded-2xl my-6 border border-slate-800">
+            <i class="fa-solid fa-ghost text-5xl text-slate-600 mb-3"></i>
+            <h4 class="text-base font-bold text-slate-300">لم يتم العثور على ألعاب مطابقة للمحرك!</h4>
+            <p class="text-xs text-slate-500 mt-1">جرّب البحث باسم آخر أو بمحيط كود اللعبة.</p>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="glass-card border-t border-slate-800 mt-12 py-6 text-center text-slate-400 text-xs no-print">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p>© 2026 جميع الحقوق محفوظة لـ <span class="text-psCyan font-extrabold">مركز البروفسير</span></p>
+            <p class="text-slate-500 font-tajawal">نظام كتالوج ألعاب PlayStation 5 التفاعلي الذكي</p>
+        </div>
+    </footer>
+
+    <script>
+        // Full Original Dataset of 65 Games from Excel File
+        const initial65Games = [
+            { id: 1, title: "A Plague Tale Innocence (PS5)", size: "40.2 GB", code: "PPSA02387-app0", price: "", notes: "" },
+            { id: 2, title: "A Plague Tale Requiem (PS5)", size: "52.2 GB", code: "PPSA05366-app0", price: "", notes: "" },
+            { id: 3, title: "Assetto Corsa Competizione (PS5)", size: "18.9 GB", code: "PPSA03847-app", price: "", notes: "" },
+            { id: 4, title: "ASTRO BOT (PS5)", size: "149.3 GB", code: "PPSA21564-app", price: "", notes: "" },
+            { id: 5, title: "Atomic Heart (PS5)", size: "92.0 GB", code: "PPSA10695-app", price: "", notes: "" },
+            { id: 6, title: "Avatar Frontiers of Pandora (PS5)", size: "175.6 GB", code: "PPSA01576-app", price: "", notes: "" },
+            { id: 7, title: "Baldurs Gate 3 (PS5)", size: "119.8 GB", code: "PPSA18463-app", price: "", notes: "" },
+            { id: 8, title: "Black Myth Wukong", size: "116.0 GB", code: "PPSA23226 – EUR (v01.016)(Fixed)", price: "", notes: "" },
+            { id: 9, title: "Control Ultimate Edition (PS5)", size: "44.0 GB", code: "PPSA01951-app", price: "", notes: "" },
+            { id: 10, title: "Crash Bandicoot 4 Its About Time (PS5)", size: "47.8 GB", code: "PPSA02433-app", price: "", notes: "" },
+            { id: 11, title: "Cyberpunk Ultimate Edition (PS5)", size: "242.1 GB", code: "PPSA04029-app", price: "", notes: "" },
+            { id: 12, title: "Days Gone Remastered (PS5)", size: "55.4 GB", code: "PPSA28180-app", price: "", notes: "" },
+            { id: 13, title: "Dead Island 2 Ultimate Edition (PS5)", size: "151.9 GB", code: "PPSA03098-app", price: "", notes: "" },
+            { id: 14, title: "Demon Slayer Kimetsu no Yaiba Sweep the Board (PS5)", size: "10.8 GB", code: "PPSA21268-app", price: "", notes: "" },
+            { id: 15, title: "Demon Slayer Kimetsu no Yaiba The Hinokami Chronicles (PS5)", size: "44.1 GB", code: "PPSA03490-app", price: "", notes: "" },
+            { id: 16, title: "Demon Slayer Kimetsu no Yaiba The Hinokami Chronicles 2 (PS5)", size: "53.4 GB", code: "PPSA25428-app", price: "", notes: "" },
+            { id: 17, title: "Demon's Souls (PS5)", size: "82.0 GB", code: "PPSA01342-app", price: "", notes: "" },
+            { id: 18, title: "Devil May Cry 5 Special Edition (PS5)", size: "63.4 GB", code: "PPSA01442-app", price: "", notes: "" },
+            { id: 19, title: "Disciples Liberation (PS5)", size: "8.3 GB", code: "PPSA02650-app", price: "", notes: "" },
+            { id: 20, title: "Disgaea 7 Vows of The Virtueless (PS5)", size: "33.2 GB", code: "PPSA13844-app", price: "", notes: "" },
+            { id: 21, title: "Disney Epic Mickey Rebrushed (PS5)", size: "35.7 GB", code: "PPSA15656-app", price: "", notes: "" },
+            { id: 22, title: "DOOM The Dark Ages (PS5)", size: "162.8 GB", code: "PPSA20560-app", price: "", notes: "" },
+            { id: 23, title: "Dragon Ball Sparking Zero (PS5)", size: "59.6 GB", code: "PPSA15210-app0", price: "", notes: "" },
+            { id: 24, title: "Dragons Dogma 2 (PS5)", size: "135.6 GB", code: "PPSA09664-app", price: "", notes: "" },
+            { id: 25, title: "EA SPORTS FC 26", size: "50.0 GB", code: "PPSA27360 – USA", price: "", notes: "" },
+            { id: 26, title: "Elden Ring (PS5)", size: "77.5 GB", code: "PPSA04828-app", price: "", notes: "" },
+            { id: 27, title: "Ghost of Yōtei", size: "65.0 GB", code: "PPSA26344", price: "", notes: "" },
+            { id: 28, title: "Ghostrunner 2 (PS5)", size: "28.8 GB", code: "PPSA09911-app", price: "", notes: "" },
+            { id: 29, title: "Ghostwire Tokyo (PS5)", size: "40.2 GB", code: "PPSA03397-app", price: "", notes: "" },
+            { id: 30, title: "Goat Simulator 3 (PS5)", size: "7.0 GB", code: "PPSA04159-app", price: "", notes: "" },
+            { id: 31, title: "Grand Theft Auto San Andreas – The Definitive Edition (PS5)", size: "22.7 GB", code: "PPSA03525-app", price: "", notes: "" },
+            { id: 32, title: "Grand Theft Auto Vice City – The Definitive Edition (PS5)", size: "10.9 GB", code: "PPSA03531-app", price: "", notes: "" },
+            { id: 33, title: "Gta v", size: "90.0 GB", code: "PPSA04264-app", price: "", notes: "" },
+            { id: 34, title: "Hogwarts Legacy (PS5)", size: "162.2 GB", code: "PPSA01593-app", price: "", notes: "" },
+            { id: 35, title: "It Takes Two (PS5)", size: "40.9 GB", code: "PPSA02343-app", price: "", notes: "" },
+            { id: 36, title: "Legacy of Kain Soul Reaver 1 and 2 Remastered (PS5)", size: "17.8 GB", code: "PPSA18152-app", price: "", notes: "" },
+            { id: 37, title: "LEGO Horizon Adventures (PS5)", size: "27.6 GB", code: "PPSA14632-app", price: "", notes: "" },
+            { id: 38, title: "LEGO Star Wars The Skywalker Saga (PS5)", size: "83.9 GB", code: "PPSA01864-app", price: "", notes: "" },
+            { id: 39, title: "Lies of P (PS5)", size: "48.3 GB", code: "PPSA10261-app", price: "", notes: "" },
+            { id: 40, title: "Little Nightmares 2 (PS5)", size: "9.9 GB", code: "PPSA02154-app", price: "", notes: "" },
+            { id: 41, title: "Little Nightmares 3 (PS5)", size: "41.1 GB", code: "PPSA05144-app", price: "", notes: "" },
+            { id: 42, title: "Mafia The Old Country (PS5)", size: "69.6 GB", code: "PPSA14299-app", price: "", notes: "" },
+            { id: 43, title: "Maneater (PS5)", size: "21.8 GB", code: "PPSA01862-app", price: "", notes: "" },
+            { id: 44, title: "Medieval Dynasty (PS5)", size: "6.0 GB", code: "PPSA07933-app", price: "", notes: "" },
+            { id: 45, title: "Metal Gear Solid Delta Snake Eater (PS5)", size: "186.1 GB", code: "PPSA15304-app", price: "", notes: "" },
+            { id: 46, title: "Metal Gear Solid Master Collection Vol 1 Bonus Content (PS5)", size: "512.7 MB", code: "PPSA16256-app", price: "", notes: "" },
+            { id: 47, title: "Metal Slug Tactics (PS5)", size: "921.0 MB", code: "PPSA20643-app", price: "", notes: "" },
+            { id: 48, title: "Metro Awakening (PS5)", size: "88.7 GB", code: "PPSA19383-app", price: "", notes: "" },
+            { id: 49, title: "Minecraft (PS5)", size: "1.0 GB", code: "PPSA17221-app", price: "", notes: "" },
+            { id: 50, title: "Minecraft Legends (PS5)", size: "7.1 GB", code: "PPSA05510-app", price: "", notes: "" },
+            { id: 51, title: "Minecraft Preview (PS5)", size: "1.1 GB", code: "PPSA19639-app", price: "", notes: "" },
+            { id: 52, title: "Monster Hunter Wilds (PS5)", size: "154.0 GB", code: "PPSA07862-app", price: "", notes: "" },
+            { id: 53, title: "Monster Jam Showdown (PS5)", size: "23.6 GB", code: "PPSA16159-app", price: "", notes: "" },
+            { id: 54, title: "Monster Truck Championship (PS5)", size: "26.5 GB", code: "PPSA01902", price: "", notes: "" },
+            { id: 55, title: "Morbid The Lords of Ire (PS5)", size: "23.2 GB", code: "PPSA13524-app", price: "", notes: "" },
+            { id: 56, title: "Mortal Kombat 1", size: "100.0 GB", code: "PPSA07570 – USA (v01.001.004)", price: "", notes: "" },
+            { id: 57, title: "Mortal Kombat 11 Ultimate (PS5)", size: "115.9 GB", code: "PPSA01619-app", price: "", notes: "" },
+            { id: 58, title: "Mortal Kombat Legacy Kollection (PS5)", size: "23.7 GB", code: "PPSA28068-app", price: "", notes: "" },
+            { id: 59, title: "MotoGP 24 (PS5)", size: "39.6 GB", code: "PPSA19566-app", price: "", notes: "" },
+            { id: 60, title: "MX vs ATV Legends (PS5)", size: "96.5 GB", code: "PPSA04734-app", price: "", notes: "" },
+            { id: 61, title: "Need for Speed Unbound (PS5)", size: "31.2 GB", code: "PPSA01716-app", price: "", notes: "" },
+            { id: 62, title: "Poppy Playtime Chapter 1 (PS5)", size: "5.5 GB", code: "PPSA20591-app", price: "", notes: "" },
+            { id: 63, title: "Poppy Playtime Chapter 2 (PS5)", size: "8.9 GB", code: "PPSA21631-app", price: "", notes: "" },
+            { id: 64, title: "Poppy Playtime Chapter 3 (PS5)", size: "31.6 GB", code: "PPSA22380-app", price: "", notes: "" },
+            { id: 65, title: "REANIMAL (PS5)", size: "27.7 GB", code: "PPSA23372-app", price: "", notes: "" }
+        ];
+
+        const STORAGE_KEY = 'prof_center_ps5_games_v2';
+        const ADMIN_PASS = 'Kemo3020';
+
+        let gamesList = [];
+        let isAdmin = false;
+        let currentView = 'table';
+        let sortAsc = true;
+
+        // On Page Load
+        window.onload = function() {
+            initApp();
+        };
+
+        function initApp() {
+            loadFromStorage();
+            calculateStorage();
+            render();
+        }
+
+        function loadFromStorage() {
+            try {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (stored) {
+                    gamesList = JSON.parse(stored);
+                } else {
+                    gamesList = [...initial65Games];
+                    saveToStorage();
+                }
+            } catch (err) {
+                console.error("Storage error:", err);
+                gamesList = [...initial65Games];
+            }
+            sortAlphabetically();
+        }
+
+        function saveToStorage() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(gamesList));
+            } catch (err) {
+                showToast("حدث خطأ أثناء حفظ البيانات في ذاكرة المتصفح!", "error");
+            }
+        }
+
+        function calculateStorage() {
+            let totalGB = 0;
+            gamesList.forEach(game => {
+                if (game.size) {
+                    if (game.size.toLowerCase().includes('gb')) {
+                        const num = parseFloat(game.size);
+                        if (!isNaN(num)) totalGB += num;
+                    } else if (game.size.toLowerCase().includes('mb')) {
+                        const num = parseFloat(game.size);
+                        if (!isNaN(num)) totalGB += (num / 1024);
+                    }
+                }
+            });
+            document.getElementById('statTotalStorage').textContent = totalGB.toFixed(1) + " GB";
+            document.getElementById('statTotalGames').textContent = gamesList.length;
+        }
+
+        function sortAlphabetically() {
+            gamesList.sort((a, b) => a.title.localeCompare(b.title, 'en', { sensitivity: 'base' }));
+        }
+
+        // Admin Toggle Handler
+        function toggleAdminPrompt() {
+            if (!isAdmin) {
+                const pass = prompt("رجاءً أدخل كلمة السر للدخول لوحة التحكم:");
+                if (pass === ADMIN_PASS) {
+                    isAdmin = true;
+                    updateAdminUI();
+                    showToast("تم فتح صلاحيات الإدارة بنجاح!", "success");
+                } else if (pass !== null) {
+                    showToast("كلمة السر غير صحيحة!", "error");
+                }
+            } else {
+                isAdmin = false;
+                updateAdminUI();
+                showToast("تم الخروج من وضع الإدارة", "info");
+            }
+        }
+
+        function updateAdminUI() {
+            const adminPanel = document.getElementById('adminPanel');
+            const adminLockIcon = document.getElementById('adminLockIcon');
+            const adminBtnText = document.getElementById('adminBtnText');
+            const adminCols = document.querySelectorAll('.admin-col');
+
+            if (isAdmin) {
+                adminPanel.classList.remove('hidden');
+                adminLockIcon.className = "fa-solid fa-lock-open text-psEmerald";
+                adminBtnText.textContent = "خروج من الإدارة";
+                adminCols.forEach(c => c.classList.remove('hidden'));
+            } else {
+                adminPanel.classList.add('hidden');
+                adminLockIcon.className = "fa-solid fa-lock text-psGold";
+                adminBtnText.textContent = "دخول لوحة التحكم";
+                adminCols.forEach(c => c.classList.add('hidden'));
+            }
+            render();
+        }
+
+        function switchView(view) {
+            currentView = view;
+            const tableView = document.getElementById('tableView');
+            const gridView = document.getElementById('gridView');
+            const tableViewBtn = document.getElementById('tableViewBtn');
+            const gridViewBtn = document.getElementById('gridViewBtn');
+
+            if (view === 'table') {
+                tableView.classList.remove('hidden');
+                gridView.classList.add('hidden');
+                tableViewBtn.className = "px-3.5 py-2 rounded-lg bg-psBlue text-white transition text-xs font-bold flex items-center gap-1.5 shadow";
+                gridViewBtn.className = "px-3.5 py-2 rounded-lg text-slate-400 hover:text-white transition text-xs font-bold flex items-center gap-1.5";
+            } else {
+                tableView.classList.add('hidden');
+                gridView.classList.remove('hidden');
+                gridViewBtn.className = "px-3.5 py-2 rounded-lg bg-psBlue text-white transition text-xs font-bold flex items-center gap-1.5 shadow";
+                tableViewBtn.className = "px-3.5 py-2 rounded-lg text-slate-400 hover:text-white transition text-xs font-bold flex items-center gap-1.5";
+            }
+        }
+
+        // Render Functions
+        function render(data = gamesList) {
+            const tableBody = document.getElementById('gamesTableBody');
+            const gridView = document.getElementById('gridView');
+            const emptyMsg = document.getElementById('emptyMessage');
+
+            tableBody.innerHTML = '';
+            gridView.innerHTML = '';
+
+            if (data.length === 0) {
+                emptyMsg.classList.remove('hidden');
+                return;
+            } else {
+                emptyMsg.classList.add('hidden');
+            }
+
+            data.forEach((game, index) => {
+                const placeholder = `https://via.placeholder.com/300x400/131e3a/00d4ff?text=${encodeURIComponent(game.title)}`;
+                const imgSrc = (game.image && game.image.trim() !== '') ? game.image : placeholder;
+
+                // 1. Table Row
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-800/50 transition border-b border-slate-800/80";
+                tr.innerHTML = `
+                    <td class="p-3.5 text-center font-bold text-slate-400">${index + 1}</td>
+                    <td class="p-2 text-center">
+                        <img src="${imgSrc}" onerror="this.src='${placeholder}'" alt="${game.title}" class="w-10 h-12 object-cover rounded-md shadow border border-slate-700 mx-auto">
+                    </td>
+                    <td class="p-3.5 font-bold text-white text-sm sm:text-base">${game.title}</td>
+                    <td class="p-3.5 text-center">
+                        <span class="inline-block badge-cyan px-2.5 py-1 rounded-full text-xs font-bold">
+                            ${game.size}
+                        </span>
+                    </td>
+                    <td class="p-3.5 text-center font-mono text-slate-300 text-xs">${game.code || '-'}</td>
+                    <td class="p-3.5 text-center font-bold text-psEmerald">${game.price || '-'}</td>
+                    <td class="p-3.5 text-slate-400 text-xs">${game.notes || '-'}</td>
+                    <td class="p-3.5 text-center admin-col ${isAdmin ? '' : 'hidden'}">
+                        <div class="flex items-center justify-center gap-1.5">
+                            <button onclick="editGame(${game.id})" class="w-7 h-7 rounded-lg bg-psGold/20 text-psGold hover:bg-psGold hover:text-black transition flex items-center justify-center text-xs" title="تعديل">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button onclick="deleteGame(${game.id})" class="w-7 h-7 rounded-lg bg-psRose/20 text-psRose hover:bg-psRose hover:text-white transition flex items-center justify-center text-xs" title="حذف">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(tr);
+
+                // 2. Grid Card
+                const card = document.createElement('div');
+                card.className = "glass-card rounded-2xl overflow-hidden border border-slate-800 shadow-xl flex flex-col justify-between group ps-glow-hover transition-all duration-300";
+                card.innerHTML = `
+                    <div class="relative overflow-hidden aspect-[3/4] bg-slate-950">
+                        <img src="${imgSrc}" onerror="this.src='${placeholder}'" alt="${game.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute top-3 right-3 bg-psBg/80 backdrop-blur-md text-psCyan px-3 py-1 rounded-full text-xs font-extrabold border border-psCyan/30">
+                            ${game.size}
+                        </div>
+                        ${isAdmin ? `
+                        <div class="absolute top-3 left-3 flex gap-1">
+                            <button onclick="editGame(${game.id})" class="w-8 h-8 rounded-lg bg-slate-900/90 text-psGold hover:bg-psGold hover:text-black transition flex items-center justify-center text-xs shadow-lg">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button onclick="deleteGame(${game.id})" class="w-8 h-8 rounded-lg bg-slate-900/90 text-psRose hover:bg-psRose hover:text-white transition flex items-center justify-center text-xs shadow-lg">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                        ` : ''}
+                    </div>
+                    <div class="p-4 flex-grow flex flex-col justify-between">
+                        <div>
+                            <h4 class="font-extrabold text-white text-sm sm:text-base mb-1.5 group-hover:text-psCyan transition line-clamp-1">${game.title}</h4>
+                            <p class="text-xs font-mono text-slate-400 mb-2"><i class="fa-solid fa-barcode text-psBrightBlue ml-1"></i> ${game.code || 'بلا كود'}</p>
+                            ${game.notes ? `<p class="text-xs text-slate-400 bg-slate-900/60 p-2 rounded-lg border border-slate-800 mb-3">${game.notes}</p>` : ''}
+                        </div>
+                        <div class="flex items-center justify-between pt-2 border-t border-slate-800 text-xs font-bold">
+                            <span class="text-slate-400">السعر: <strong class="text-psEmerald">${game.price || 'غير محدد'}</strong></span>
+                            <span class="text-slate-500">#${index + 1}</span>
+                        </div>
+                    </div>
+                `;
+                gridView.appendChild(card);
+            });
+        }
+
+        // Live Search Handler
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            const clearBtn = document.getElementById('clearSearchBtn');
+
+            if (query.length > 0) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+
+            const filtered = gamesList.filter(g => 
+                g.title.toLowerCase().includes(query) ||
+                (g.code && g.code.toLowerCase().includes(query)) ||
+                (g.size && g.size.toLowerCase().includes(query))
+            );
+
+            render(filtered);
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('clearSearchBtn').classList.add('hidden');
+            render(gamesList);
+        }
+
+        function sortData(key) {
+            sortAsc = !sortAsc;
+            gamesList.sort((a, b) => {
+                let valA = a[key] ? a[key].toString().toLowerCase() : '';
+                let valB = b[key] ? b[key].toString().toLowerCase() : '';
+                return sortAsc ? valA.localeCompare(valB, 'ar') : valB.localeCompare(valA, 'ar');
+            });
+            saveToStorage();
+            render();
+            showToast(`تم ترتيب البيانات حسب ${key === 'title' ? 'الاسم' : 'المساحة'}`, "info");
+        }
+
+        // Form Submission
+        function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const editId = document.getElementById('editGameId').value;
+            const title = document.getElementById('gameTitle').value.trim();
+            const size = document.getElementById('gameSize').value.trim();
+            const code = document.getElementById('gameCode').value.trim();
+            const price = document.getElementById('gamePrice').value.trim();
+            const image = document.getElementById('gameImage').value.trim();
+            const notes = document.getElementById('gameNotes').value.trim();
+
+            if (editId !== '') {
+                const idx = gamesList.findIndex(g => Number(g.id) === Number(editId));
+                if (idx !== -1) {
+                    gamesList[idx] = { ...gamesList[idx], title, size, code, price, image, notes };
+                    showToast("تم تحديث معلومات اللعبة بنجاح!", "success");
+                }
+            } else {
+                const newGame = {
+                    id: Date.now(),
+                    title,
+                    size,
+                    code,
+                    price,
+                    image,
+                    notes
+                };
+                gamesList.push(newGame);
+                showToast("تمت إضافة اللعبة بنجاح إلى المكتبة!", "success");
+            }
+
+            sortAlphabetically();
+            saveToStorage();
+            calculateStorage();
+            render();
+            resetForm();
+        }
+
+        function editGame(id) {
+            const game = gamesList.find(g => Number(g.id) === Number(id));
+            if (!game) return;
+
+            document.getElementById('editGameId').value = game.id;
+            document.getElementById('gameTitle').value = game.title;
+            document.getElementById('gameSize').value = game.size;
+            document.getElementById('gameCode').value = game.code || '';
+            document.getElementById('gamePrice').value = game.price || '';
+            document.getElementById('gameImage').value = game.image || '';
+            document.getElementById('gameNotes').value = game.notes || '';
+
+            document.getElementById('adminFormTitle').innerHTML = `<i class="fa-solid fa-pen-to-square text-psGold"></i> تعديل بيانات لعبة (${game.title})`;
+            document.getElementById('saveBtn').innerHTML = `<i class="fa-solid fa-arrows-rotate"></i> تحديث وحفظ اللعبة`;
+
+            window.scrollTo({ top: 120, behavior: 'smooth' });
+        }
+
+        function deleteGame(id) {
+            const game = gamesList.find(g => Number(g.id) === Number(id));
+            if (confirm(`هل أنت تأكد من حذف لعبة (${game ? game.title : ''})؟`)) {
+                gamesList = gamesList.filter(g => Number(g.id) !== Number(id));
+                saveToStorage();
+                calculateStorage();
+                render();
+                showToast("تم حذف اللعبة بنجاح", "info");
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('gameForm').reset();
+            document.getElementById('editGameId').value = '';
+            document.getElementById('adminFormTitle').innerHTML = `<i class="fa-solid fa-plus-circle"></i> إضافة لعبة جديدة للقائمة`;
+            document.getElementById('saveBtn').innerHTML = `<i class="fa-solid fa-floppy-disk"></i> حفظ البيانات`;
+        }
+
+        function restoreDefaultGames() {
+            if (confirm("هل أنت تأكد من استعادة الـ 65 لعبة الأصلية؟ سيتم إلغاء أي تعديلات أو إضافات جديدة.")) {
+                gamesList = [...initial65Games];
+                saveToStorage();
+                calculateStorage();
+                sortAlphabetically();
+                render();
+                showToast("تمت استعادة الـ 65 لعبة الأصلية بنجاح!", "success");
+            }
+        }
+
+        function backupJSON() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(gamesList, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "professor_center_ps5_games.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+            showToast("تم استخراج النسخة الاحتياطية JSON", "success");
+        }
+
+        function exportExcel() {
+            const exportData = gamesList.map((g, idx) => ({
+                "م": idx + 1,
+                "اسم اللعبة (Game Title)": g.title,
+                "المساحة التخزينية": g.size,
+                "كود اللعبة (Game ID)": g.code || '-',
+                "السعر": g.price || '-',
+                "الملاحظات": g.notes || '-'
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(exportData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "قائمة الألعاب");
+            XLSX.writeFile(wb, "قائمة_ألعاب_PS5_مركز_البروفسير.xlsx");
+            showToast("تم تصدير ملف Excel بنجاح!", "success");
+        }
+
+        function showToast(msg, type = "info") {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+
+            let bgClass = "bg-slate-800 border-slate-700 text-white";
+            let icon = "fa-circle-info text-psCyan";
+
+            if (type === "success") {
+                bgClass = "bg-emerald-950/90 border-emerald-600 text-emerald-200";
+                icon = "fa-circle-check text-emerald-400";
+            } else if (type === "error") {
+                bgClass = "bg-rose-950/90 border-rose-600 text-rose-200";
+                icon = "fa-circle-exclamation text-rose-400";
+            }
+
+            toast.className = `flex items-center gap-3 px-4 py-3 rounded-xl border shadow-2xl text-xs sm:text-sm font-bold transition-all duration-300 transform translate-y-2 opacity-0 ${bgClass}`;
+            toast.innerHTML = `<i class="fa-solid ${icon} text-base"></i> <span>${msg}</span>`;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
