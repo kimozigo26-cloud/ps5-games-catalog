@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>كتالوج ألعاب PlayStation 5</title>
+<style>
+:root{
+  color-scheme:dark;--bg:#070b14;--panel:#101827;--line:#263550;
+  --blue:#4085ff;--muted:#a6b4ca
+}
+*{box-sizing:border-box}
+body{
+  margin:0;color:#f4f7ff;font-family:Tahoma,Arial,sans-serif;
+  background:radial-gradient(ellipse at 15% 0%,#162c55 0,transparent 38%),var(--bg)
+}
+header{
+  padding:42px 6%;background:linear-gradient(115deg,#101a30,#173d82 68%,#12606e);
+  border-bottom:1px solid #4b8eff;box-shadow:0 12px 40px #0006
+}
+header h1{margin:0 0 10px;font-size:clamp(27px,5vw,44px)}
+header p{margin:0;color:#d0def5}
+main{max-width:1250px;margin:auto;padding:28px 18px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px}
+input,button{font:inherit}
+input[type="search"],input[type="text"],input[type="number"],
+input[type="password"],input[type="file"]{
+  background:#0c1422;color:#fff;border:1px solid var(--line);
+  border-radius:12px;padding:12px 14px
+}
+input:focus{outline:2px solid #4085ff88;border-color:var(--blue)}
+#search{flex:1;min-width:210px}
+button{
+  background:linear-gradient(135deg,#3675ed,#4b9cff);color:#fff;border:0;
+  border-radius:11px;padding:11px 17px;font-weight:bold;cursor:pointer;
+  transition:transform .15s,filter .15s
+}
+button:hover{filter:brightness(1.12);transform:translateY(-1px)}
+.secondary{background:#263550}.danger{background:#a83245}
+#count{color:var(--muted);margin:8px 0 18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(225px,1fr));gap:18px}
+.card{
+  background:linear-gradient(160deg,#141f33,#0e1726);border:1px solid #253653;
+  border-radius:17px;overflow:hidden;box-shadow:0 10px 28px #0003;
+  transition:transform .2s,border-color .2s,box-shadow .2s
+}
+.card:hover{transform:translateY(-5px);border-color:#4b8eff;box-shadow:0 18px 38px #0007}
+.cover{
+  height:165px;background:linear-gradient(135deg,#172949,#254878);
+  display:grid;place-items:center;color:#c1d2ef;font-size:15px
+}
+.cover img{width:100%;height:100%;object-fit:cover}
+.info{padding:15px}
+.info h2{font-size:17px;margin:0 0 12px;line-height:1.5}
+.meta{font-size:13px;color:var(--muted);line-height:2}
+.price{
+  display:inline-block;margin-top:7px;padding:5px 10px;border:1px solid #39c7b488;
+  border-radius:999px;background:#123b3a;color:#78f0d2;font-size:14px;font-weight:bold
+}
+.actions{display:flex;gap:8px;margin-top:13px}
+.actions button{flex:1;padding:9px}
+.hidden{display:none!important}
+dialog{
+  width:min(500px,calc(100% - 24px));border:1px solid var(--line);
+  border-radius:16px;background:#111b2c;color:#fff;padding:22px;
+  box-shadow:0 20px 80px #0009
+}
+dialog::backdrop{background:#000b;backdrop-filter:blur(4px)}
+dialog h2{margin-top:0}
+.form{display:grid;gap:13px}
+.form label{display:grid;gap:7px;color:#d5def0}
+.form input{width:100%}
+.form-buttons{display:flex;gap:8px;justify-content:flex-start}
+.notice{color:var(--muted);font-size:13px;line-height:1.7}
+footer{text-align:center;color:var(--muted);padding:30px}
+</style>
+</head>
+<body>
+<header>
+  <h1>🎮 قائمة ألعاب PlayStation 5</h1>
+  <p>مركز البروفسير — كتالوج الألعاب</p>
+</header>
+
+<main>
+  <div class="toolbar">
+    <input id="search" type="search" placeholder="ابحث باسم اللعبة أو كودها…">
+    <button id="loginBtn">دخول لوحة التحكم</button>
+    <button id="addBtn" class="hidden">＋ إضافة لعبة</button>
+    <button id="logoutBtn" class="secondary hidden">تسجيل الخروج</button>
+  </div>
+  <div id="count"></div>
+  <section id="games" class="grid"></section>
+</main>
+<footer>كتالوج ألعاب PS5</footer>
+
+<dialog id="loginDialog">
+  <h2>دخول لوحة التحكم</h2>
+  <form id="loginForm" class="form">
+    <label>كلمة المرور
+      <input id="password" type="password" required autocomplete="current-password">
+    </label>
+    <div class="form-buttons">
+      <button type="submit">دخول</button>
+      <button type="button" class="secondary" data-close="loginDialog">إلغاء</button>
+    </div>
+    <div class="notice">نسخة محلية للتجربة؛ كلمة المرور ليست حماية مناسبة لموقع منشور.</div>
+  </form>
+</dialog>
+
+<dialog id="gameDialog">
+  <h2 id="formTitle">إضافة لعبة</h2>
+  <form id="gameForm" class="form">
+    <input id="gameIndex" type="hidden">
+    <label>اسم اللعبة
+      <input id="title" type="text" required>
+    </label>
+    <label>كود اللعبة
+      <input id="code" type="text" placeholder="—">
+    </label>
+    <label>المساحة بالجيجابايت
+      <input id="size" type="number" min="0" step="0.1" placeholder="—">
+    </label>
+    <label>السعر بالريال السعودي
+      <input id="price" type="number" min="0" step="0.01" placeholder="مثال: 59.99">
+    </label>
+    <label>صورة اللعبة
+      <input id="image" type="file" accept="image/*">
+    </label>
+    <div class="form-buttons">
+      <button type="submit">حفظ</button>
+      <button type="button" class="secondary" data-close="gameDialog">إلغاء</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+const PASSWORD = "Kimo2030";
+const STORAGE_KEY = "ps5_catalog_v1";
+
+const initialData = `A Plague Tale Innocence|PPSA02387-app0|40.2
+A Plague Tale Requiem|PPSA05366-app0|52.2
+Assetto Corsa Competizione|PPSA03847-app|18.9
+ASTRO BOT|PPSA21564-app|149.3
+Atomic Heart|PPSA10695-app|92.0
+Avatar Frontiers of Pandora|PPSA01576-app|175.6
+Baldurs Gate 3|PPSA18463-app|119.8
+Black Myth Wukong|PPSA23226|—
+Control Ultimate Edition|PPSA01951-app|44.0
+Crash Bandicoot 4 Its About Time|PPSA02433-app|47.8
+Cyberpunk Ultimate Edition|PPSA04029-app|242.1
+Days Gone Remastered|PPSA28180-app|55.4
+Dead Island 2 Ultimate Edition|PPSA03098-app|151.9
+Demon Slayer Sweep the Board|PPSA21268-app|10.8
+Demon Slayer Hinokami Chronicles|PPSA03490-app|44.1
+Demon Slayer Hinokami Chronicles 2|PPSA25428-app|53.4
+Demon's Souls|PPSA01342-app|82.0
+Devil May Cry 5 Special Edition|PPSA01442-app|63.4
+Disciples Liberation|PPSA02650-app|8.3
+Disgaea 7 Vows of The Virtueless|PPSA13844-app|33.2
+Disney Epic Mickey Rebrushed|PPSA15656-app|35.7
+DOOM The Dark Ages|PPSA20560-app|162.8
+Dragon Ball Sparking Zero|PPSA15210-app0|59.6
+Dragons Dogma 2|PPSA09664-app|135.6
+EA SPORTS FC 26|PPSA27360|—
+Elden Ring|—|77.5
+Ghost of Yōtei|PPSA26344|—
+Ghostrunner 2|PPSA09911-app|28.8
+Ghostwire Tokyo|PPSA03397-app|40.2
+Goat Simulator 3|PPSA04159-app|7.0
+Grand Theft Auto San Andreas Edition|PPSA03525-app|22.7
+Grand Theft Auto Vice City Edition|PPSA03531-app|10.9
+Grand Theft Auto V|PPSA04264-app|—
+Hogwarts Legacy|PPSA01593-app|162.2
+It Takes Two|PPSA02343-app|40.9
+Legacy of Kain Soul Reaver 1 and 2|PPSA18152-app|17.8
+LEGO Horizon Adventures|PPSA14632-app|27.6
+LEGO Star Wars The Skywalker Saga|PPSA01864-app|83.9
+Lies of P|PPSA10261-app|48.3
+Little Nightmares 2|PPSA02154-app|9.9
+Little Nightmares 3|PPSA05144-app|41.1
+Mafia The Old Country|PPSA14299-app|69.6
+Maneater|PPSA01862-app|21.8
+Medieval Dynasty|PPSA07933-app|6.0
+Metal Gear Solid Delta Snake Eater|PPSA15304-app|186.1
+Metal Gear Solid Master Collection Vol 1|PPSA16256-app|0.5
+Metal Slug Tactics|PPSA20643-app|0.9
+Metro Awakening|PPSA19383-app|88.7
+Minecraft|PPSA17221-app|1.0
+Minecraft Legends|PPSA05510-app|7.1
+Minecraft Preview|PPSA19639-app|1.1
+Monster Hunter Wilds|PPSA07862-app|154.0
+Monster Jam Showdown|PPSA16159-app|23.6
+Monster Truck Championship|PPSA01902|26.5
+Morbid The Lords of Ire|PPSA13524-app|23.2
+Mortal Kombat 1|PPSA07570|—
+Mortal Kombat 11 Ultimate|PPSA01619-app|115.9
+Mortal Kombat Legacy Kollection|PPSA28068-app|23.7
+MotoGP 24|PPSA19566-app|39.6
+MX vs ATV Legends|PPSA04734-app|96.5
+Need for Speed Unbound|PPSA01716-app|31.2
+Poppy Playtime Chapter 1|PPSA20591-app|5.5
+Poppy Playtime Chapter 2|PPSA21631-app|8.9
+Poppy Playtime Chapter 3|PPSA22380-app|31.6
+REANIMAL|PPSA23372-app|27.7`;
+
+function loadGames() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+    if (Array.isArray(saved) && saved.length >= 65) {
+      return saved.map(g => ({price:"", ...g}));
+    }
+  } catch {}
+  return initialData.trim().split(/\r?\n/).map((row, i) => {
+    const [title, code, size] = row.split("|");
+    return {title, code, size, price:"", image:"", number:i + 1};
+  });
+}
+
+let games = loadGames();
+let admin = false;
+const $ = id => document.getElementById(id);
+
+function save() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(games));
+  } catch {
+    alert("تعذر الحفظ؛ مساحة تخزين المتصفح ممتلئة. جرّب صورة أصغر.");
+  }
+}
+
+function esc(value) {
+  return String(value ?? "").replace(/[&<>"']/g, ch => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+  }[ch]));
+}
+
+function render() {
+  const query = $("search").value.trim().toLowerCase();
+  const filtered = games.filter(game =>
+    `${game.title} ${game.code}`.toLowerCase().includes(query)
+  );
+
+  $("count").textContent = `إجمالي الألعاب: ${games.length} — المعروض: ${filtered.length}`;
+
+  $("games").innerHTML = filtered.map(game => {
+    const index = games.indexOf(game);
+    const priceHTML = game.price
+      ? `<div class="price">${esc(game.price)} ر.س</div>`
+      : "";
+
+    return `<article class="card">
+      <div class="cover">
+        ${game.image
+          ? `<img src="${game.image}" alt="${esc(game.title)}">`
+          : "🎮 أضف صورة اللعبة"}
+      </div>
+      <div class="info">
+        <h2>${esc(game.title)}</h2>
+        <div class="meta">
+          كود اللعبة: ${esc(game.code || "—")}<br>
+          المساحة: ${esc(game.size || "—")}${game.size && game.size !== "—" ? " GB" : ""}
+          ${priceHTML}
+        </div>
+        ${admin ? `<div class="actions">
+          <button class="secondary" onclick="editGame(${index})">تعديل</button>
+          <button class="danger" onclick="deleteGame(${index})">حذف</button>
+        </div>` : ""}
+      </div>
+    </article>`;
+  }).join("");
+}
+
+function updateButtons() {
+  $("loginBtn").classList.toggle("hidden", admin);
+  $("addBtn").classList.toggle("hidden", !admin);
+  $("logoutBtn").classList.toggle("hidden", !admin);
+  render();
+}
+
+function openGameForm(game = null, index = "") {
+  $("gameForm").reset();
+  $("gameIndex").value = index;
+  $("formTitle").textContent = game ? "تعديل لعبة" : "إضافة لعبة";
+  $("title").value = game?.title || "";
+  $("code").value = game?.code === "—" ? "" : (game?.code || "");
+  $("size").value = game?.size === "—" ? "" : (game?.size || "");
+  $("price").value = game?.price || "";
+  $("gameDialog").showModal();
+}
+
+$("search").addEventListener("input", render);
+$("loginBtn").onclick = () => $("loginDialog").showModal();
+$("addBtn").onclick = () => openGameForm();
+
+$("logoutBtn").onclick = () => {
+  admin = false;
+  updateButtons();
+};
+
+$("loginForm").onsubmit = event => {
+  event.preventDefault();
+  if ($("password").value === PASSWORD) {
+    admin = true;
+    $("password").value = "";
+    $("loginDialog").close();
+    updateButtons();
+  } else {
+    alert("كلمة المرور غير صحيحة");
+  }
+};
+
+window.editGame = index => openGameForm(games[index], index);
+
+window.deleteGame = index => {
+  if (confirm(`هل تريد حذف "${games[index].title}"؟`)) {
+    games.splice(index, 1);
+    save();
+    render();
+  }
+};
+
+$("gameForm").onsubmit = async event => {
+  event.preventDefault();
+
+  const indexValue = $("gameIndex").value;
+  const oldGame = indexValue !== "" ? games[Number(indexValue)] : null;
+  const file = $("image").files[0];
+  let image = oldGame?.image || "";
+
+  if (file) {
+    if (!file.type.startsWith("image/")) {
+      alert("اختر ملف صورة صالحًا.");
+      return;
+    }
+    image = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  const game = {
+    title: $("title").value.trim(),
+    code: $("code").value.trim() || "—",
+    size: $("size").value || "—",
+    price: $("price").value,
+    image,
+    number: oldGame?.number || games.length + 1
+  };
+
+  if (indexValue !== "") games[Number(indexValue)] = game;
+  else games.push(game);
+
+  save();
+  $("gameDialog").close();
+  render();
+};
+
+document.querySelectorAll("[data-close]").forEach(button => {
+  button.onclick = () => $(button.dataset.close).close();
+});
+
+save();
+render();
+</script>
+</body>
+</html>
