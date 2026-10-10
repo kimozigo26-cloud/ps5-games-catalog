@@ -5,73 +5,36 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>كتالوج ألعاب PlayStation 5</title>
 <style>
-:root{
-  color-scheme:dark;--bg:#070b14;--panel:#101827;--line:#263550;
-  --blue:#4085ff;--muted:#a6b4ca
-}
+:root{color-scheme:dark;--bg:#070b14;--line:#263550;--blue:#4085ff;--muted:#a6b4ca}
 *{box-sizing:border-box}
-body{
-  margin:0;color:#f4f7ff;font-family:Tahoma,Arial,sans-serif;
-  background:radial-gradient(ellipse at 15% 0%,#162c55 0,transparent 38%),var(--bg)
-}
-header{
-  padding:42px 6%;background:linear-gradient(115deg,#101a30,#173d82 68%,#12606e);
-  border-bottom:1px solid #4b8eff;box-shadow:0 12px 40px #0006
-}
+body{margin:0;color:#f4f7ff;font-family:Tahoma,Arial,sans-serif;background:radial-gradient(ellipse at 15% 0%,#162c55 0,transparent 38%),var(--bg)}
+header{padding:42px 6%;background:linear-gradient(115deg,#101a30,#173d82 68%,#12606e);border-bottom:1px solid #4b8eff}
 header h1{margin:0 0 10px;font-size:clamp(27px,5vw,44px)}
 header p{margin:0;color:#d0def5}
 main{max-width:1250px;margin:auto;padding:28px 18px}
 .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px}
 input,button{font:inherit}
-input[type="search"],input[type="text"],input[type="number"],
-input[type="password"],input[type="file"]{
-  background:#0c1422;color:#fff;border:1px solid var(--line);
-  border-radius:12px;padding:12px 14px
-}
-input:focus{outline:2px solid #4085ff88;border-color:var(--blue)}
+input{background:#0c1422;color:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+input:focus{outline:2px solid #4085ff88}
 #search{flex:1;min-width:210px}
-button{
-  background:linear-gradient(135deg,#3675ed,#4b9cff);color:#fff;border:0;
-  border-radius:11px;padding:11px 17px;font-weight:bold;cursor:pointer;
-  transition:transform .15s,filter .15s
-}
-button:hover{filter:brightness(1.12);transform:translateY(-1px)}
+button{background:linear-gradient(135deg,#3675ed,#4b9cff);color:#fff;border:0;border-radius:11px;padding:11px 17px;font-weight:bold;cursor:pointer}
+button:hover{filter:brightness(1.12)}
 .secondary{background:#263550}.danger{background:#a83245}
 #count{color:var(--muted);margin:8px 0 18px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(225px,1fr));gap:18px}
-.card{
-  background:linear-gradient(160deg,#141f33,#0e1726);border:1px solid #253653;
-  border-radius:17px;overflow:hidden;box-shadow:0 10px 28px #0003;
-  transition:transform .2s,border-color .2s,box-shadow .2s
-}
-.card:hover{transform:translateY(-5px);border-color:#4b8eff;box-shadow:0 18px 38px #0007}
-.cover{
-  height:165px;background:linear-gradient(135deg,#172949,#254878);
-  display:grid;place-items:center;color:#c1d2ef;font-size:15px
-}
+.card{background:linear-gradient(160deg,#141f33,#0e1726);border:1px solid #253653;border-radius:17px;overflow:hidden;transition:.2s}
+.card:hover{transform:translateY(-4px);border-color:#4b8eff}
+.cover{height:165px;background:linear-gradient(135deg,#172949,#254878);display:grid;place-items:center;color:#c1d2ef}
 .cover img{width:100%;height:100%;object-fit:cover}
-.info{padding:15px}
-.info h2{font-size:17px;margin:0 0 12px;line-height:1.5}
+.info{padding:15px}.info h2{font-size:17px;margin:0 0 12px;line-height:1.5}
 .meta{font-size:13px;color:var(--muted);line-height:2}
-.price{
-  display:inline-block;margin-top:7px;padding:5px 10px;border:1px solid #39c7b488;
-  border-radius:999px;background:#123b3a;color:#78f0d2;font-size:14px;font-weight:bold
-}
-.actions{display:flex;gap:8px;margin-top:13px}
-.actions button{flex:1;padding:9px}
+.price{display:inline-block;margin-top:7px;padding:5px 10px;border:1px solid #39c7b488;border-radius:999px;background:#123b3a;color:#78f0d2;font-weight:bold}
+.actions{display:flex;gap:8px;margin-top:13px}.actions button{flex:1;padding:9px}
 .hidden{display:none!important}
-dialog{
-  width:min(500px,calc(100% - 24px));border:1px solid var(--line);
-  border-radius:16px;background:#111b2c;color:#fff;padding:22px;
-  box-shadow:0 20px 80px #0009
-}
+dialog{width:min(500px,calc(100% - 24px));border:1px solid var(--line);border-radius:16px;background:#111b2c;color:#fff;padding:22px}
 dialog::backdrop{background:#000b;backdrop-filter:blur(4px)}
-dialog h2{margin-top:0}
-.form{display:grid;gap:13px}
-.form label{display:grid;gap:7px;color:#d5def0}
-.form input{width:100%}
-.form-buttons{display:flex;gap:8px;justify-content:flex-start}
-.notice{color:var(--muted);font-size:13px;line-height:1.7}
+.form{display:grid;gap:13px}.form label{display:grid;gap:7px;color:#d5def0}.form input{width:100%}
+.form-buttons{display:flex;gap:8px}.notice{color:var(--muted);font-size:13px;line-height:1.7}
 footer{text-align:center;color:var(--muted);padding:30px}
 </style>
 </head>
@@ -80,10 +43,9 @@ footer{text-align:center;color:var(--muted);padding:30px}
   <h1>🎮 قائمة ألعاب PlayStation 5</h1>
   <p>مركز البروفسير — كتالوج الألعاب</p>
 </header>
-
 <main>
   <div class="toolbar">
-    <input id="search" type="search" placeholder="ابحث باسم اللعبة أو كودها…">
+    <input id="search" type="search" placeholder="ابحث بالاسم أو الكود أو المساحة أو السعر…">
     <button id="loginBtn">دخول لوحة التحكم</button>
     <button id="addBtn" class="hidden">＋ إضافة لعبة</button>
     <button id="logoutBtn" class="secondary hidden">تسجيل الخروج</button>
@@ -96,14 +58,12 @@ footer{text-align:center;color:var(--muted);padding:30px}
 <dialog id="loginDialog">
   <h2>دخول لوحة التحكم</h2>
   <form id="loginForm" class="form">
-    <label>كلمة المرور
-      <input id="password" type="password" required autocomplete="current-password">
-    </label>
+    <label>كلمة المرور<input id="password" type="password" required></label>
     <div class="form-buttons">
       <button type="submit">دخول</button>
       <button type="button" class="secondary" data-close="loginDialog">إلغاء</button>
     </div>
-    <div class="notice">نسخة محلية للتجربة؛ كلمة المرور ليست حماية مناسبة لموقع منشور.</div>
+    <div class="notice">نسخة محلية للتجربة؛ كلمة المرور داخل ملف الموقع وليست حماية مناسبة لموقع منشور.</div>
   </form>
 </dialog>
 
@@ -111,21 +71,11 @@ footer{text-align:center;color:var(--muted);padding:30px}
   <h2 id="formTitle">إضافة لعبة</h2>
   <form id="gameForm" class="form">
     <input id="gameIndex" type="hidden">
-    <label>اسم اللعبة
-      <input id="title" type="text" required>
-    </label>
-    <label>كود اللعبة
-      <input id="code" type="text" placeholder="—">
-    </label>
-    <label>المساحة بالجيجابايت
-      <input id="size" type="number" min="0" step="0.1" placeholder="—">
-    </label>
-    <label>السعر بالريال السعودي
-      <input id="price" type="number" min="0" step="0.01" placeholder="مثال: 59.99">
-    </label>
-    <label>صورة اللعبة
-      <input id="image" type="file" accept="image/*">
-    </label>
+    <label>اسم اللعبة<input id="title" type="text" required></label>
+    <label>كود اللعبة<input id="code" type="text" placeholder="—"></label>
+    <label>المساحة بالجيجابايت<input id="size" type="number" min="0" step="0.1" placeholder="—"></label>
+    <label>السعر بالجنيه المصري<input id="price" type="number" min="0" step="0.01" placeholder="مثال: 1500"></label>
+    <label>صورة اللعبة<input id="image" type="file" accept="image/*"></label>
     <div class="form-buttons">
       <button type="submit">حفظ</button>
       <button type="button" class="secondary" data-close="gameDialog">إلغاء</button>
@@ -203,163 +153,109 @@ Poppy Playtime Chapter 2|PPSA21631-app|8.9
 Poppy Playtime Chapter 3|PPSA22380-app|31.6
 REANIMAL|PPSA23372-app|27.7`;
 
-function loadGames() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
-    if (Array.isArray(saved) && saved.length >= 65) {
-      return saved.map(g => ({price:"", ...g}));
-    }
-  } catch {}
-  return initialData.trim().split(/\r?\n/).map((row, i) => {
-    const [title, code, size] = row.split("|");
-    return {title, code, size, price:"", image:"", number:i + 1};
+function loadGames(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null");
+    if(Array.isArray(saved)&&saved.length>=65)return saved.map(g=>({price:"",...g}));
+  }catch{}
+  return initialData.trim().split(/\r?\n/).map((row,i)=>{
+    const [title,code,size]=row.split("|");
+    return {title,code,size,price:"",image:"",number:i+1};
   });
 }
+let games=loadGames(), admin=false;
+const $=id=>document.getElementById(id);
 
-let games = loadGames();
-let admin = false;
-const $ = id => document.getElementById(id);
-
-function save() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(games));
-  } catch {
-    alert("تعذر الحفظ؛ مساحة تخزين المتصفح ممتلئة. جرّب صورة أصغر.");
-  }
+function save(){
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(games))}
+  catch{alert("تعذر الحفظ؛ مساحة التخزين ممتلئة. جرّب صورة أصغر.")}
 }
-
-function esc(value) {
-  return String(value ?? "").replace(/[&<>"']/g, ch => ({
-    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+function esc(value){
+  return String(value??"").replace(/[&<>"']/g,ch=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
   }[ch]));
 }
-
-function render() {
-  const query = $("search").value.trim().toLowerCase();
-  const filtered = games.filter(game =>
-    `${game.title} ${game.code}`.toLowerCase().includes(query)
+function render(){
+  const q=$("search").value.trim().toLowerCase();
+  const shown=games.filter(g=>
+    `${g.title} ${g.code} ${g.size} ${g.price}`.toLowerCase().includes(q)
   );
-
-  $("count").textContent = `إجمالي الألعاب: ${games.length} — المعروض: ${filtered.length}`;
-
-  $("games").innerHTML = filtered.map(game => {
-    const index = games.indexOf(game);
-    const priceHTML = game.price
-      ? `<div class="price">${esc(game.price)} ر.س</div>`
-      : "";
-
+  $("count").textContent=`إجمالي الألعاب: ${games.length} — المعروض: ${shown.length}`;
+  $("games").innerHTML=shown.map(g=>{
+    const i=games.indexOf(g);
     return `<article class="card">
-      <div class="cover">
-        ${game.image
-          ? `<img src="${game.image}" alt="${esc(game.title)}">`
-          : "🎮 أضف صورة اللعبة"}
-      </div>
-      <div class="info">
-        <h2>${esc(game.title)}</h2>
+      <div class="cover">${g.image?`<img src="${g.image}" alt="${esc(g.title)}">`:"🎮 أضف صورة اللعبة"}</div>
+      <div class="info"><h2>${esc(g.title)}</h2>
         <div class="meta">
-          كود اللعبة: ${esc(game.code || "—")}<br>
-          المساحة: ${esc(game.size || "—")}${game.size && game.size !== "—" ? " GB" : ""}
-          ${priceHTML}
+          كود اللعبة: ${esc(g.code||"—")}<br>
+          المساحة: ${esc(g.size||"—")}${g.size&&g.size!=="—"?" GB":""}
+          ${g.price?`<div class="price">${esc(g.price)} جنيه مصري</div>`:""}
         </div>
-        ${admin ? `<div class="actions">
-          <button class="secondary" onclick="editGame(${index})">تعديل</button>
-          <button class="danger" onclick="deleteGame(${index})">حذف</button>
-        </div>` : ""}
+        ${admin?`<div class="actions">
+          <button class="secondary" onclick="editGame(${i})">تعديل</button>
+          <button class="danger" onclick="deleteGame(${i})">حذف</button>
+        </div>`:""}
       </div>
     </article>`;
   }).join("");
 }
-
-function updateButtons() {
-  $("loginBtn").classList.toggle("hidden", admin);
-  $("addBtn").classList.toggle("hidden", !admin);
-  $("logoutBtn").classList.toggle("hidden", !admin);
+function updateButtons(){
+  $("loginBtn").classList.toggle("hidden",admin);
+  $("addBtn").classList.toggle("hidden",!admin);
+  $("logoutBtn").classList.toggle("hidden",!admin);
   render();
 }
-
-function openGameForm(game = null, index = "") {
+function openForm(g=null,i=""){
   $("gameForm").reset();
-  $("gameIndex").value = index;
-  $("formTitle").textContent = game ? "تعديل لعبة" : "إضافة لعبة";
-  $("title").value = game?.title || "";
-  $("code").value = game?.code === "—" ? "" : (game?.code || "");
-  $("size").value = game?.size === "—" ? "" : (game?.size || "");
-  $("price").value = game?.price || "";
+  $("gameIndex").value=i;
+  $("formTitle").textContent=g?"تعديل لعبة":"إضافة لعبة";
+  $("title").value=g?.title||"";
+  $("code").value=g?.code==="—"?"":(g?.code||"");
+  $("size").value=g?.size==="—"?"":(g?.size||"");
+  $("price").value=g?.price||"";
   $("gameDialog").showModal();
 }
+$("search").addEventListener("input",render);
+$("loginBtn").onclick=()=>$("loginDialog").showModal();
+$("addBtn").onclick=()=>openForm();
+$("logoutBtn").onclick=()=>{admin=false;updateButtons()};
 
-$("search").addEventListener("input", render);
-$("loginBtn").onclick = () => $("loginDialog").showModal();
-$("addBtn").onclick = () => openGameForm();
-
-$("logoutBtn").onclick = () => {
-  admin = false;
-  updateButtons();
+$("loginForm").onsubmit=e=>{
+  e.preventDefault();
+  if($("password").value===PASSWORD){
+    admin=true;$("password").value="";$("loginDialog").close();updateButtons();
+  }else alert("كلمة المرور غير صحيحة");
 };
-
-$("loginForm").onsubmit = event => {
-  event.preventDefault();
-  if ($("password").value === PASSWORD) {
-    admin = true;
-    $("password").value = "";
-    $("loginDialog").close();
-    updateButtons();
-  } else {
-    alert("كلمة المرور غير صحيحة");
+window.editGame=i=>openForm(games[i],i);
+window.deleteGame=i=>{
+  if(confirm(`هل تريد حذف "${games[i].title}"؟`)){
+    games.splice(i,1);save();render();
   }
 };
-
-window.editGame = index => openGameForm(games[index], index);
-
-window.deleteGame = index => {
-  if (confirm(`هل تريد حذف "${games[index].title}"؟`)) {
-    games.splice(index, 1);
-    save();
-    render();
-  }
-};
-
-$("gameForm").onsubmit = async event => {
-  event.preventDefault();
-
-  const indexValue = $("gameIndex").value;
-  const oldGame = indexValue !== "" ? games[Number(indexValue)] : null;
-  const file = $("image").files[0];
-  let image = oldGame?.image || "";
-
-  if (file) {
-    if (!file.type.startsWith("image/")) {
-      alert("اختر ملف صورة صالحًا.");
-      return;
-    }
-    image = await new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
+$("gameForm").onsubmit=async e=>{
+  e.preventDefault();
+  const rawIndex=$("gameIndex").value;
+  const old=rawIndex!==""?games[Number(rawIndex)]:null;
+  const file=$("image").files[0];
+  let image=old?.image||"";
+  if(file){
+    if(!file.type.startsWith("image/")){alert("اختر ملف صورة صالحًا.");return}
+    image=await new Promise((resolve,reject)=>{
+      const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file);
     });
   }
-
-  const game = {
-    title: $("title").value.trim(),
-    code: $("code").value.trim() || "—",
-    size: $("size").value || "—",
-    price: $("price").value,
+  const item={
+    title:$("title").value.trim(),
+    code:$("code").value.trim()||"—",
+    size:$("size").value||"—",
+    price:$("price").value,
     image,
-    number: oldGame?.number || games.length + 1
+    number:old?.number||games.length+1
   };
-
-  if (indexValue !== "") games[Number(indexValue)] = game;
-  else games.push(game);
-
-  save();
-  $("gameDialog").close();
-  render();
+  if(rawIndex!=="")games[Number(rawIndex)]=item;else games.push(item);
+  save();$("gameDialog").close();render();
 };
-
-document.querySelectorAll("[data-close]").forEach(button => {
-  button.onclick = () => $(button.dataset.close).close();
-});
+document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>$ (b.dataset.close).close());
 
 save();
 render();
